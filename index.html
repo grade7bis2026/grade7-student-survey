@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grade 7 — School Environment Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf8f4;
+    --accent: #c4704a;
+    --accent-light: #f0e6de;
+    --muted: #7a7a8a;
+    --border: #e2ddd6;
+    --color: #5b7fa6;
+    --light: #e8f0f7;
+    --success: #4a7c59;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .site-header {
+    background: var(--ink);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    top: -50px; right: -50px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(91,127,166,0.15);
+  }
+  .header-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7aafd4;
+    margin-bottom: 0.5rem;
+  }
+  .site-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 0.8rem;
+  }
+  .intro-text {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.86rem;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .framework-tags {
+    display: flex; flex-wrap: wrap; gap: 0.35rem;
+    margin-top: 0.9rem; justify-content: center;
+  }
+  .framework-tag {
+    font-size: 0.67rem; letter-spacing: 0.04em;
+    padding: 0.2rem 0.55rem; border-radius: 20px;
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.45);
+  }
+
+  .progress-bar-wrap { background: var(--border); height: 3px; }
+  .progress-bar-fill {
+    height: 3px; background: var(--color);
+    transition: width 0.3s ease; width: 0%;
+  }
+
+  .form-wrap {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 0 1rem 5rem;
+  }
+
+  .survey-card {
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+    box-shadow: 0 4px 30px rgba(26,26,46,0.07);
+    overflow: hidden;
+  }
+
+  .section {
+    padding: 1.5rem 1.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section:last-of-type { border-bottom: none; }
+
+  .section-header {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+    margin-bottom: 1.2rem;
+  }
+  .section-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0; margin-top: 2px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem; line-height: 1.3;
+  }
+  .section-subtitle {
+    font-size: 0.74rem; color: var(--muted);
+    margin-top: 0.2rem; font-style: italic;
+  }
+
+  .question {
+    margin-bottom: 1.4rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px dashed var(--border);
+  }
+  .question:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .question.unanswered .q-text { color: #b05030; }
+  .question.unanswered .q-label::after { content: ' ← please answer'; color: #b05030; font-style: italic; font-size: 0.75rem; }
+
+  .q-label {
+    font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--color);
+    font-weight: 500; margin-bottom: 0.35rem;
+  }
+  .q-text {
+    font-size: 0.92rem; line-height: 1.5; margin-bottom: 0.85rem;
+  }
+
+  /* EMOJI SCALE */
+  .emoji-scale { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .emoji-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    padding: 0.55rem 0.7rem; border-radius: 10px;
+    border: 2px solid var(--border); background: #fff;
+    cursor: pointer; transition: all 0.15s;
+    font-size: 1.5rem; min-width: 58px;
+  }
+  .emoji-btn span { font-size: 0.62rem; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+  .emoji-btn:hover { border-color: var(--color); background: var(--light); transform: translateY(-2px); }
+  .emoji-btn.selected { border-color: var(--color); background: var(--light); transform: translateY(-2px); }
+
+  /* CHOICE BUTTONS */
+  .choice-options { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .choice-btn {
+    padding: 0.5rem 1rem; border-radius: 6px;
+    border: 1.5px solid var(--border); background: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
+    cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .choice-btn:hover { border-color: var(--color); background: var(--light); }
+  .choice-btn.selected { border-color: var(--color); background: var(--light); color: var(--color); font-weight: 500; }
+
+  /* GENDER BUTTONS */
+  .gender-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .gender-btn {
+    padding: 0.6rem 1.4rem; border-radius: 8px;
+    border: 1.5px solid var(--border); background: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    cursor: pointer; transition: all 0.15s; color: var(--ink);
+  }
+  .gender-btn:hover { border-color: var(--color); background: var(--light); }
+  .gender-btn.selected { border-color: var(--color); background: var(--light); color: var(--color); font-weight: 500; }
+
+  /* TEXTAREA */
+  .open-input {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+    color: var(--ink); background: var(--paper);
+    resize: vertical; min-height: 80px; line-height: 1.5;
+    transition: border-color 0.15s;
+  }
+  .open-input:focus { outline: none; border-color: var(--color); background: #fff; }
+
+  /* SUBMIT */
+  .submit-area {
+    padding: 1.5rem 1.8rem;
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .submit-note { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+  .btn-submit {
+    padding: 0.9rem 2rem; border-radius: 9px; border: none;
+    background: var(--color); color: #fff;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+    align-self: flex-start;
+  }
+  .btn-submit:hover { background: #4a6d94; transform: translateY(-1px); }
+  .btn-submit:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  .error-msg {
+    display: none; background: #fff0ee;
+    border: 1px solid #f0c0b8; border-radius: 8px;
+    padding: 0.8rem 1rem; font-size: 0.82rem; color: #a04030; line-height: 1.5;
+  }
+
+  .success-screen {
+    display: none; text-align: center; padding: 3.5rem 2rem;
+  }
+  .success-screen .check { font-size: 3.5rem; margin-bottom: 1rem; }
+  .success-screen h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem; margin-bottom: 0.6rem;
+  }
+  .success-screen p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+  @media(max-width: 480px) {
+    .section { padding: 1.2rem; }
+    .submit-area { padding: 1.2rem; }
+    .emoji-btn { min-width: 50px; font-size: 1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-label">Bombay International School · Grade 7 · 2025–26</div>
+  <h1>School Environment<br>Assessment Survey</h1>
+  <p class="intro-text">Please share what you actually feel. Your answers are anonymous and they genuinely matter.</p>
+  <div class="framework-tags">
+    <span class="framework-tag">Tripod Student Survey — classroom experience & teacher relationships</span>
+    <span class="framework-tag">PISA Belonging Scale — safety, inclusion & peer environment</span>
+    <span class="framework-tag">Anonymous · ~5 mins</span>
+  </div>
+</header>
+
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress"></div></div>
+
+<div class="form-wrap">
+  <div class="survey-card">
+    <div id="survey-body">
+
+      <!-- GENDER -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">👤</div>
+          <div><div class="section-title">One quick thing first</div></div>
+        </div>
+        <div class="question" data-q="gender">
+          <div class="q-label">I identify as</div>
+          <div class="gender-options">
+            <button class="gender-btn" onclick="pick(this,'gender')">Girl</button>
+            <button class="gender-btn" onclick="pick(this,'gender')">Boy</button>
+            <button class="gender-btn" onclick="pick(this,'gender')">Prefer not to say</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 1: BELONGING -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">🤝</div>
+          <div>
+            <div class="section-title">Life at school</div>
+            <div class="section-subtitle">PISA Belonging Scale — safety, inclusion & peer environment</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="q1">
+          <div class="q-label">Q1 of 12</div>
+          <div class="q-text">I look forward to coming to school.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q1')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q1')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q1')">🙂<span>Often</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q1')">😊<span>Always</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q2">
+          <div class="q-label">Q2 of 12</div>
+          <div class="q-text">I have friends at school I can trust and talk to.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q2')">😟<span>No</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q2')">😕<span>1–2</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q2')">🙂<span>A few</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q2')">😊<span>Many</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q3">
+          <div class="q-label">Q3 of 12</div>
+          <div class="q-text">I feel judged or criticised by other students for how I look, act, or what I say.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q3')">😊<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q3')">🙂<span>Rarely</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q3')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q3')">😟<span>Often</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q4">
+          <div class="q-label">Q4 of 12</div>
+          <div class="q-text">I feel safe at school.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q4')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q4')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q4')">🙂<span>Mostly</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q4')">😊<span>Always</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: LEARNING -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">📚</div>
+          <div>
+            <div class="section-title">Learning in class</div>
+            <div class="section-subtitle">Tripod Student Survey — challenge, clarity & engagement</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="q5">
+          <div class="q-label">Q5 of 12</div>
+          <div class="q-text">Classwork feels about right — not too easy, not too hard.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q5')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q5')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q5')">🙂<span>Often</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q5')">😊<span>Always</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q6">
+          <div class="q-label">Q6 of 12</div>
+          <div class="q-text">I often feel bored in class because things are too easy or we move too slowly.</div>
+          <div class="choice-options">
+            <button class="choice-btn" onclick="pick(this,'q6')">Yes</button>
+            <button class="choice-btn" onclick="pick(this,'q6')">Sometimes</button>
+            <button class="choice-btn" onclick="pick(this,'q6')">No</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q7">
+          <div class="q-label">Q7 of 12</div>
+          <div class="q-text">I often feel lost in class because things are too hard or move too fast.</div>
+          <div class="choice-options">
+            <button class="choice-btn" onclick="pick(this,'q7')">Yes</button>
+            <button class="choice-btn" onclick="pick(this,'q7')">Sometimes</button>
+            <button class="choice-btn" onclick="pick(this,'q7')">No</button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q8">
+          <div class="q-label">Q8 of 12</div>
+          <div class="q-text">When I don't understand something, I feel comfortable asking my teacher for help.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q8')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q8')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q8')">🙂<span>Often</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q8')">😊<span>Always</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: TEACHERS -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">🧑‍🏫</div>
+          <div>
+            <div class="section-title">My teachers</div>
+            <div class="section-subtitle">Tripod Student Survey — care, respect & fairness</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="q9">
+          <div class="q-label">Q9 of 12</div>
+          <div class="q-text">My teachers treat me with respect.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q9')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q9')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q9')">🙂<span>Often</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q9')">😊<span>Always</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q10">
+          <div class="q-label">Q10 of 12</div>
+          <div class="q-text">As a class, when we struggle, we feel understood by our teachers — not judged or labelled.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q10')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q10')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q10')">🙂<span>Often</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q10')">😊<span>Always</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q11">
+          <div class="q-label">Q11 of 12</div>
+          <div class="q-text">I feel like my teacher believes I can do well.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q11')">😟<span>Never</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q11')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q11')">🙂<span>Often</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q11')">😊<span>Always</span></button>
+          </div>
+        </div>
+
+        <div class="question" data-q="q12">
+          <div class="q-label">Q12 of 12</div>
+          <div class="q-text">My teachers treat all students in my class the same way.</div>
+          <div class="emoji-scale">
+            <button class="emoji-btn" onclick="pick(this,'q12')">😟<span>Rarely</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q12')">😕<span>Sometimes</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q12')">🙂<span>Most of the time</span></button>
+            <button class="emoji-btn" onclick="pick(this,'q12')">😊<span>Always</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: OPEN -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-icon">💬</div>
+          <div>
+            <div class="section-title">In your own words</div>
+            <div class="section-subtitle">Optional — skip any you don't want to answer</div>
+          </div>
+        </div>
+
+        <div class="question" data-q="q13">
+          <div class="q-label">Open question</div>
+          <div class="q-text">What's one thing about school that makes you feel really good?</div>
+          <textarea class="open-input" id="q13" oninput="updateProgress()" placeholder="Write anything you like..."></textarea>
+        </div>
+
+        <div class="question" data-q="q14">
+          <div class="q-label">Open question</div>
+          <div class="q-text">What's one thing about school that worries you or makes you feel bad?</div>
+          <textarea class="open-input" id="q14" oninput="updateProgress()" placeholder="Write anything you like..."></textarea>
+        </div>
+
+        <div class="question" data-q="q15">
+          <div class="q-label">Open question</div>
+          <div class="q-text">If you could change one thing about your class or school, what would it be?</div>
+          <textarea class="open-input" id="q15" oninput="updateProgress()" placeholder="Write anything you like..."></textarea>
+        </div>
+      </div>
+
+    </div><!-- /survey-body -->
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="success-screen">
+      <div class="check">✅</div>
+      <h2>Thank you!</h2>
+      <p>Your answers have been saved anonymously.<br>Every response helps build a better picture<br>of how Grade 7 is really feeling.</p>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area" id="submit-area">
+      <div class="error-msg" id="error-msg">Please answer all 12 questions before submitting.</div>
+      <p class="submit-note">🔒 <strong>Anonymous.</strong> Your name is never collected. Responses are grouped together — no individual answers are ever seen separately.</p>
+      <button class="btn-submit" id="submit-btn" onclick="submitSurvey()">Submit my answers →</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── GOOGLE FORM CONFIG ──────────────────────────────────────
+  const FORM_ID = '1FAIpQLScHf10VJyKLXArUElL1UsUwUJ3OhLZFc0aUEeSDp_7n3RrsOw';
+
+  const ENTRY = {
+    gender: 'entry.1609108851',
+    q1:     'entry.80392269',
+    q2:     'entry.1403535579',
+    q3:     'entry.1381958408',
+    q4:     'entry.582359267',
+    q5:     'entry.517798153',
+    q6:     'entry.493639631',
+    q7:     'entry.628461750',
+    q8:     'entry.1364564863',
+    q9:     'entry.549439448',
+    q10:    'entry.824263874',
+    q11:    'entry.375338246',
+    q12:    'entry.1274541873',
+    q13: 'entry.19344817',
+    q14: 'entry.826139716',
+    q15: 'entry.1440392537',
+  };
+  // ────────────────────────────────────────────────────────────
+
+  const answers = {};
+  const REQUIRED = ['gender','q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12'];
+
+  function pick(btn, qid) {
+    btn.closest('.emoji-scale, .choice-options, .gender-options')
+       .querySelectorAll('button')
+       .forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[qid] = btn.textContent.trim().split('\n')[0].trim();
+    // For emoji buttons, get the text label not the emoji
+    const span = btn.querySelector('span');
+    if (span) answers[qid] = span.textContent.trim();
+    document.querySelector(`[data-q="${qid}"]`).classList.remove('unanswered');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const closedDone = REQUIRED.filter(q => answers[q]).length;
+    const pct = Math.round((closedDone / REQUIRED.length) * 100);
+    document.getElementById('progress').style.width = pct + '%';
+  }
+
+  function validate() {
+    let valid = true;
+    REQUIRED.forEach(q => {
+      if (!answers[q]) {
+        document.querySelector(`[data-q="${q}"]`).classList.add('unanswered');
+        valid = false;
+      }
+    });
+    return valid;
+  }
+
+  function submitSurvey() {
+    if (!validate()) {
+      const err = document.getElementById('error-msg');
+      err.style.display = 'block';
+      document.querySelector('.unanswered').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    document.getElementById('error-msg').style.display = 'none';
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    // Collect open text answers
+    answers.q13 = document.getElementById('q13').value.trim();
+    answers.q14 = document.getElementById('q14').value.trim();
+    answers.q15 = document.getElementById('q15').value.trim();
+
+    const base = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`;
+    const params = new URLSearchParams();
+    Object.entries(ENTRY).forEach(([qid, entryId]) => {
+      if (answers[qid]) params.append(entryId, answers[qid]);
+    });
+
+    fetch(base, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    })
+    .then(() => {
+      document.getElementById('survey-body').style.display = 'none';
+      document.getElementById('submit-area').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+      document.getElementById('progress').style.width = '100%';
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = 'Submit my answers →';
+      document.getElementById('error-msg').textContent = 'Something went wrong. Please try again.';
+      document.getElementById('error-msg').style.display = 'block';
+    });
+  }
+</script>
+</body>
+</html>
