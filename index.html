@@ -272,10 +272,10 @@
           <div class="q-label">Q1 of 10</div>
           <div class="q-text">How does school make you feel most days?</div>
           <div class="choice-options">
-            <button class="choice-btn" onclick="pick(this,'q1')">Happy and energised</button>
-            <button class="choice-btn" onclick="pick(this,'q1')">Mostly fine</button>
-            <button class="choice-btn" onclick="pick(this,'q1')">Tired and drained</button>
-            <button class="choice-btn" onclick="pick(this,'q1')">Anxious or stressed</button>
+            <button class="choice-btn" onclick="pick(this,'q1')">😊 Happy and energised</button>
+            <button class="choice-btn" onclick="pick(this,'q1')">🙂 Mostly fine</button>
+            <button class="choice-btn" onclick="pick(this,'q1')">😔 Tired and drained</button>
+            <button class="choice-btn" onclick="pick(this,'q1')">😟 Anxious or stressed</button>
           </div>
         </div>
 
@@ -283,10 +283,10 @@
           <div class="q-label">Q2 of 10</div>
           <div class="q-text">How do you feel around your classmates most of the time?</div>
           <div class="choice-options">
-            <button class="choice-btn" onclick="pick(this,'q2')">Comfortable and accepted</button>
-            <button class="choice-btn" onclick="pick(this,'q2')">Mostly okay</button>
-            <button class="choice-btn" onclick="pick(this,'q2')">Sometimes uncomfortable</button>
-            <button class="choice-btn" onclick="pick(this,'q2')">Often judged or left out</button>
+            <button class="choice-btn" onclick="pick(this,'q2')">😊 Comfortable and accepted</button>
+            <button class="choice-btn" onclick="pick(this,'q2')">🙂 Mostly okay</button>
+            <button class="choice-btn" onclick="pick(this,'q2')">😕 Sometimes uncomfortable</button>
+            <button class="choice-btn" onclick="pick(this,'q2')">😟 Often judged or left out</button>
           </div>
         </div>
 
@@ -294,10 +294,10 @@
           <div class="q-label">Q3 of 10</div>
           <div class="q-text">I have experienced or witnessed unkindness, exclusion, or bullying in my class this year.</div>
           <div class="choice-options">
-            <button class="choice-btn" onclick="pick(this,'q3')">Yes, it happened to me</button>
-            <button class="choice-btn" onclick="pick(this,'q3')">Yes, I saw it happen to others</button>
-            <button class="choice-btn" onclick="pick(this,'q3')">Both — happened to me and I witnessed it</button>
-            <button class="choice-btn" onclick="pick(this,'q3')">No, not that I've noticed</button>
+            <button class="choice-btn" onclick="pick(this,'q3')">😔 Yes, it happened to me</button>
+            <button class="choice-btn" onclick="pick(this,'q3')">👀 Yes, I saw it happen to others</button>
+            <button class="choice-btn" onclick="pick(this,'q3')">😔👀 Both — happened to me and I witnessed it</button>
+            <button class="choice-btn" onclick="pick(this,'q3')">✅ No, not that I've noticed</button>
           </div>
         </div>
       </div>
@@ -316,11 +316,11 @@
           <div class="q-label">Q4 of 10</div>
           <div class="q-text">How would you describe the difficulty level of work in your classes?</div>
           <div class="choice-options">
-            <button class="choice-btn" onclick="pick(this,'q4')">Much too easy</button>
             <button class="choice-btn" onclick="pick(this,'q4')">Too easy</button>
-            <button class="choice-btn" onclick="pick(this,'q4')">About right</button>
+            <button class="choice-btn" onclick="pick(this,'q4')">Easy</button>
+            <button class="choice-btn" onclick="pick(this,'q4')">Just right</button>
+            <button class="choice-btn" onclick="pick(this,'q4')">Hard</button>
             <button class="choice-btn" onclick="pick(this,'q4')">Too hard</button>
-            <button class="choice-btn" onclick="pick(this,'q4')">Much too hard</button>
           </div>
         </div>
 
@@ -361,10 +361,10 @@
           <div class="q-label">Q8 of 10</div>
           <div class="q-text">As a class, when we struggle, we feel understood by our teachers — not judged or labelled.</div>
           <div class="choice-options">
-            <button class="choice-btn" onclick="pick(this,'q8')">Supported, always</button>
-            <button class="choice-btn" onclick="pick(this,'q8')">Supported, mostly</button>
-            <button class="choice-btn" onclick="pick(this,'q8')">Judged, sometimes</button>
-            <button class="choice-btn" onclick="pick(this,'q8')">Judged or labelled, often</button>
+            <button class="choice-btn" onclick="pick(this,'q8')">Always supported</button>
+            <button class="choice-btn" onclick="pick(this,'q8')">Mostly supported</button>
+            <button class="choice-btn" onclick="pick(this,'q8')">Sometimes judged</button>
+            <button class="choice-btn" onclick="pick(this,'q8')">Often judged or labelled</button>
           </div>
         </div>
 
@@ -472,6 +472,8 @@
     // For emoji buttons, get the text label not the emoji
     const span = btn.querySelector('span');
     if (span) answers[qid] = span.textContent.trim();
+    // Strip leading emojis from choice buttons so value matches Google Form exactly
+    answers[qid] = answers[qid].replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\s]+/u, '').trim();
     document.querySelector(`[data-q="${qid}"]`).classList.remove('unanswered');
     updateProgress();
   }
